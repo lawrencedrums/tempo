@@ -68,7 +68,7 @@ export class Engine {
     const ctx = this.ensureContext();
     await ctx.resume();
     this.applyVolume();
-    this.fire(this.get().groove.sound, 3, 1, ctx.currentTime + 0.02);
+    this.fire(this.get().groove.sound, 2, 1, ctx.currentTime + 0.02);
   }
 
   applyVolume(): void {
@@ -90,7 +90,7 @@ export class Engine {
     for (const id of SOUNDS) {
       this.bank.set(
         id,
-        [0, 1, 2, 3].map((v) => {
+        [0, 1, 2].map((v) => {
           const data = render(id, v, ctx.sampleRate);
           const buf = ctx.createBuffer(1, data.length, ctx.sampleRate);
           buf.copyToChannel(data, 0);
@@ -149,7 +149,7 @@ export class Engine {
     // After a long stall (throttled tab) skip clicks that are already in the past.
     if (slot.time < now - 0.05) return;
     const { groove, settings } = this.get();
-    if (slot.sub === 0) this.fire(groove.sound, slot.level, BEAT_GAIN[slot.level], slot.time);
+    if (slot.sub === 0) this.fire(groove.sound, slot.level - 1, BEAT_GAIN[slot.level], slot.time);
     else if (settings.subVolume > 0) this.fire(groove.sound, 0, settings.subVolume, slot.time);
   }
 
