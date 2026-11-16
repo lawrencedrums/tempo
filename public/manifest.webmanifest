@@ -1,6 +1,6 @@
 {
-  "name": "Downbeat",
-  "short_name": "Downbeat",
+  "name": "Tempo",
+  "short_name": "Tempo",
   "description": "A metronome for drummers: fast tempos, odd meters, tempo trainer, gap click and setlists.",
   "start_url": ".",
   "scope": ".",

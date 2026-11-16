@@ -271,6 +271,10 @@ input[type='range'] {
 
 /* ───────── play view ───────── */
 
+.topbar {
+  display: none;
+}
+
 .songbar {
   display: flex;
   align-items: center;
@@ -848,6 +852,28 @@ dialog h3 {
     justify-content: center;
     gap: 24px;
     padding: 24px;
+  }
+
+  .topbar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand {
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  body:not(.side-open) .app {
+    grid-template-columns: minmax(380px, 460px);
+  }
+
+  body:not(.side-open) .side {
+    display: none;
   }
 
   .side {

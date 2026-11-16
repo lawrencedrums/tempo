@@ -528,7 +528,7 @@ function exportFile(): void {
   const url = URL.createObjectURL(new Blob([exportLibrary(state)], { type: 'application/json' }));
   const a = el('a');
   a.href = url;
-  a.download = `downbeat-${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = `tempo-${new Date().toISOString().slice(0, 10)}.json`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
@@ -551,6 +551,19 @@ function renderSongs(): void {
   const list = activeSetlist();
   const active = findSong(state.activeSongId);
   const nodes: HTMLElement[] = [];
+
+  const barCard = el('div', 'card');
+  const barField = el('label', 'field');
+  const barSwitch = el('input', 'switch');
+  barSwitch.type = 'checkbox';
+  barSwitch.checked = s.songBar;
+  barSwitch.addEventListener('change', () => {
+    s.songBar = barSwitch.checked;
+    commit();
+  });
+  barField.append(el('span', '', 'Show song bar above the click'), barSwitch);
+  barCard.append(barField);
+  nodes.push(barCard);
 
   const saveRow = el('div', 'button-row');
   const saveNew = el('button', 'btn primary', 'Save current as song');
@@ -654,6 +667,19 @@ syncers.push(renderSongs);
 
 // ───────────────────────── navigation and keyboard ─────────────────────────
 
+const sideToggle = $('side-toggle');
+function toggleSide(): void {
+  s.sideOpen = !s.sideOpen;
+  commit();
+}
+sideToggle.addEventListener('click', toggleSide);
+syncers.push(() => {
+  document.body.classList.toggle('side-open', s.sideOpen);
+  sideToggle.setAttribute('aria-expanded', String(s.sideOpen));
+  sideToggle.textContent = s.sideOpen ? 'Close menu' : 'Menu';
+  $('songbar').hidden = !s.songBar;
+});
+
 for (const b of document.querySelectorAll<HTMLButtonElement>('.nav button')) {
   b.addEventListener('click', () => (document.body.dataset.tab = b.dataset.tab));
 }
@@ -678,6 +704,10 @@ document.addEventListener('keydown', (e) => {
     case 't':
     case 'T':
       tap();
+      break;
+    case 'm':
+    case 'M':
+      toggleSide();
       break;
     case '[':
       stepSong(-1);

@@ -14,7 +14,9 @@ import {
   type Unit,
 } from './types';
 
-const KEY = 'downbeat:v1';
+const KEY = 'tempo:v1';
+/** Key used before the app was renamed; read once so nothing is lost. */
+const OLD_KEY = 'downbeat:v1';
 
 const isObj = (x: unknown): x is Record<string, unknown> => typeof x === 'object' && x !== null;
 
@@ -101,6 +103,8 @@ function sanitizeSettings(x: unknown): Settings {
     boost: o.boost === true,
     flash: o.flash === true,
     latencyMs: int(o.latencyMs, 0, 500, 0),
+    songBar: o.songBar !== false,
+    sideOpen: o.sideOpen === true,
   };
 }
 
@@ -147,7 +151,7 @@ function sanitizeState(x: unknown): AppState {
 
 export function load(): AppState {
   try {
-    return sanitizeState(JSON.parse(localStorage.getItem(KEY) ?? 'null'));
+    return sanitizeState(JSON.parse(localStorage.getItem(KEY) ?? localStorage.getItem(OLD_KEY) ?? 'null'));
   } catch {
     return sanitizeState(null);
   }
@@ -180,13 +184,13 @@ if (typeof window !== 'undefined') {
 }
 
 export function exportLibrary(state: AppState): string {
-  return JSON.stringify({ app: 'downbeat', version: 1, songs: state.songs, setlists: state.setlists }, null, 2);
+  return JSON.stringify({ app: 'tempo', version: 1, songs: state.songs, setlists: state.setlists }, null, 2);
 }
 
 /** Merges a backup into the library: items with a known id are replaced, the rest are added. */
 export function importLibrary(state: AppState, text: string): { songs: number; setlists: number } {
   const data: unknown = JSON.parse(text);
-  if (!isObj(data) || data.app !== 'downbeat') throw new Error('Not a Downbeat backup file');
+  if (!isObj(data) || (data.app !== 'tempo' && data.app !== 'downbeat')) throw new Error('Not a Tempo backup file');
   const songs = sanitizeSongs(data.songs);
   for (const s of songs) {
     const i = state.songs.findIndex((x) => x.id === s.id);

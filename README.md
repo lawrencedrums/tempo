@@ -1,4 +1,6 @@
-# Downbeat
+# Tempo
+
+**Live app: https://lawrencedrums.github.io/tempo/**
 
 A metronome for drummers that runs in the browser and installs as an app (PWA) on Android and macOS. It works offline and keeps all data on the device.
 

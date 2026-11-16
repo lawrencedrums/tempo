@@ -8,13 +8,18 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="icon-192.png" />
-    <title>Downbeat</title>
+    <title>Tempo</title>
   </head>
   <body data-tab="play">
     <div id="flash"></div>
     <div class="app">
       <main id="view-play" class="view">
-        <header class="songbar">
+        <div class="topbar">
+          <span class="brand">Tempo</span>
+          <button id="side-toggle" class="btn" aria-controls="side" aria-expanded="false">Menu</button>
+        </div>
+
+        <header id="songbar" class="songbar">
           <button id="song-prev" class="icon-btn" aria-label="Previous song">‹</button>
           <div class="songinfo">
             <div id="song-name">No song loaded</div>
@@ -68,7 +73,7 @@
         </div>
       </main>
 
-      <section class="side">
+      <section id="side" class="side">
         <nav class="nav">
           <button data-tab="play">Click</button>
           <button data-tab="practice">Practice</button>
@@ -149,6 +154,7 @@
               <dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Tempo ±1 (hold Shift for ±5)</dd>
               <dt><kbd>T</kbd></dt><dd>Tap tempo</dd>
               <dt><kbd>[</kbd> <kbd>]</kbd></dt><dd>Previous or next song</dd>
+              <dt><kbd>M</kbd></dt><dd>Open or close this menu</dd>
             </dl>
           </div>
         </section>

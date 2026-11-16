@@ -11,7 +11,7 @@ import { defineConfig, type Plugin } from 'vite';
 function serviceWorker(): Plugin {
   let outDir = 'dist';
   return {
-    name: 'downbeat-service-worker',
+    name: 'tempo-service-worker',
     apply: 'build',
     configResolved(config) {
       outDir = config.build.outDir;
@@ -29,7 +29,7 @@ function serviceWorker(): Plugin {
         hash.update(name).update(readFileSync(path));
         if (name !== 'index.html') files.push(`./${name}`);
       }
-      const sw = `const CACHE = 'downbeat-${hash.digest('hex').slice(0, 12)}';
+      const sw = `const CACHE = 'tempo-app-${hash.digest('hex').slice(0, 12)}';
 const FILES = ${JSON.stringify(files)};
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
@@ -37,7 +37,7 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k.startsWith('downbeat-') && k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => (k.startsWith('tempo-app-') || k.startsWith('downbeat-')) && k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim()),
   );
 });
