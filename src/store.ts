@@ -10,7 +10,6 @@ import {
   type Settings,
   type Song,
   type SoundId,
-  type TempoNote,
   type Unit,
 } from './types';
 
@@ -37,28 +36,34 @@ const str = (x: unknown, def: string): string => (typeof x === 'string' && x.tri
 export const uid = (): string =>
   crypto.randomUUID ? crypto.randomUUID() : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
 
-/** Compound meters (6/8, 9/8, 12/8) count dotted quarters; other /8 and /16 count quarters. */
-export function defaultTempoNote(beats: number, unit: Unit): TempoNote {
-  if (unit === 8 && beats >= 6 && beats % 3 === 0) return 'dotted';
-  return unit >= 8 ? 'quarter' : 'beat';
+/** Strong on beat one; compound meters (6/8, 9/8, 12/8) also accent every third beat. */
+export function defaultAccents(beats: number, unit: Unit): Level[] {
+  const compound = unit === 8 && beats >= 6 && beats % 3 === 0;
+  return Array.from({ length: beats }, (_, i): Level => (i === 0 ? 3 : compound && i % 3 === 0 ? 2 : 1));
 }
 
-export function defaultAccents(beats: number, tempoNote: TempoNote): Level[] {
-  return Array.from({ length: beats }, (_, i): Level => (i === 0 ? 3 : tempoNote === 'dotted' && i % 3 === 0 ? 2 : 1));
+/**
+ * Early versions let the BPM count quarter or dotted-quarter notes instead of
+ * clicks. Grooves saved that way are converted so they sound the same.
+ */
+function clickBpm(o: Record<string, unknown>, unit: Unit): unknown {
+  const bpm = Number(o.bpm);
+  if (!Number.isFinite(bpm)) return o.bpm;
+  if (o.tempoNote === 'quarter') return (bpm * unit) / 4;
+  if (o.tempoNote === 'dotted') return ((bpm * unit) / 4) * 1.5;
+  return bpm;
 }
 
 export function sanitizeGroove(x: unknown): Groove {
   const o = isObj(x) ? x : {};
   const beats = int(o.beats, 1, 20, 4);
   const unit = oneOf<Unit>(o.unit, [2, 4, 8, 16], 4);
-  const tempoNote = oneOf<TempoNote>(o.tempoNote, ['beat', 'quarter', 'dotted'], defaultTempoNote(beats, unit));
   const given = Array.isArray(o.accents) ? o.accents : null;
-  const fallback = defaultAccents(beats, tempoNote);
+  const fallback = defaultAccents(beats, unit);
   return {
-    bpm: int(o.bpm, BPM_MIN, BPM_MAX, 120),
+    bpm: int(clickBpm(o, unit), BPM_MIN, BPM_MAX, 120),
     beats,
     unit,
-    tempoNote,
     subdivision: int(o.subdivision, 1, 6, 1),
     swing: int(o.swing, 50, 75, 50),
     accents: fallback.map((def, i) => (given ? (int(given[i], 0, 3, def) as Level) : def)),
@@ -241,11 +246,17 @@ export function swingPreset(swing: number): (typeof SWING_PRESETS)[number] {
 
 export const canSwing = (g: Groove): boolean => g.subdivision === 2 || g.subdivision === 4;
 
+/** The swing in words, or an empty string when it is off or does not apply. */
+export function swingLabel(g: Groove): string {
+  const swing = canSwing(g) ? swingPreset(g.swing) : SWING_PRESETS[0];
+  return swing.value > 50 ? `${swing.name} swing` : '';
+}
+
 /** Subdivision and swing in words, or an empty string when both are off. */
 export function rhythmDetail(g: Groove): string {
   if (g.subdivision === 1) return '';
-  const swing = canSwing(g) ? swingPreset(g.swing) : SWING_PRESETS[0];
-  return subdivisionName(g.subdivision, g.unit) + (swing.value > 50 ? ` · ${swing.name.toLowerCase()} swing` : '');
+  const swing = swingLabel(g);
+  return subdivisionName(g.subdivision, g.unit) + (swing ? ` · ${swing.toLowerCase()}` : '');
 }
 
 export function grooveLabel(g: Groove): string {

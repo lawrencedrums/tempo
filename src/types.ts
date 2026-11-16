@@ -1,9 +1,6 @@
 /** 0 muted, 1 normal, 2 accent, 3 strong accent */
 export type Level = 0 | 1 | 2 | 3;
 
-/** Which note value the BPM number counts. */
-export type TempoNote = 'beat' | 'quarter' | 'dotted';
-
 export const SOUNDS = ['click', 'beep', 'wood', 'cowbell', 'rim', 'hat'] as const;
 export type SoundId = (typeof SOUNDS)[number];
 
@@ -11,10 +8,10 @@ export type Unit = 2 | 4 | 8 | 16;
 
 /** Everything a song stores. */
 export interface Groove {
+  /** Clicks per minute: one click per beat of the time signature. */
   bpm: number;
   beats: number;
   unit: Unit;
-  tempoNote: TempoNote;
   /** Clicks per beat, 1–6. */
   subdivision: number;
   /** Percent of the beat (or half beat) given to the first note, 50–75. */

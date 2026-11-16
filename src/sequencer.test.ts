@@ -6,7 +6,6 @@ const groove = (over: Partial<Groove> = {}): Groove => ({
   bpm: 120,
   beats: 4,
   unit: 4,
-  tempoNote: 'beat',
   subdivision: 1,
   swing: 50,
   accents: [3, 1, 1, 1],
@@ -55,16 +54,16 @@ describe('Sequencer', () => {
     expect(slots[1].time).toBeCloseTo(0.25 / 6, 9);
   });
 
-  it('counts dotted quarters in 6/8', () => {
-    const g = groove({ bpm: 60, beats: 6, unit: 8, tempoNote: 'dotted', accents: [3, 1, 1, 2, 1, 1] });
+  it('clicks every eighth in 6/8', () => {
+    const g = groove({ bpm: 180, beats: 6, unit: 8, accents: [3, 1, 1, 2, 1, 1] });
     const { slots } = take({ groove: g, practice: practice() }, 7);
     expect(slots[3].time).toBeCloseTo(1, 9);
     expect(slots[6].time).toBeCloseTo(2, 9);
     expect(slots[6].bar).toBe(1);
   });
 
-  it('counts quarters in 7/8', () => {
-    const g = groove({ bpm: 120, beats: 7, unit: 8, tempoNote: 'quarter', accents: [3, 1, 2, 1, 2, 1, 1] });
+  it('clicks every eighth in 7/8', () => {
+    const g = groove({ bpm: 240, beats: 7, unit: 8, accents: [3, 1, 2, 1, 2, 1, 1] });
     const { slots } = take({ groove: g, practice: practice() }, 8);
     expect(slots[1].time).toBeCloseTo(0.25, 9);
     expect(slots[7].bar).toBe(1);

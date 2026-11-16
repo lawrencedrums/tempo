@@ -22,12 +22,7 @@ export interface SeqInput {
   practice: Practice;
 }
 
-export function beatSeconds(bpm: number, g: Groove): number {
-  const base = 60 / bpm;
-  if (g.tempoNote === 'quarter') return (base * 4) / g.unit;
-  if (g.tempoNote === 'dotted') return (base * 4) / g.unit / 1.5;
-  return base;
-}
+export const beatSeconds = (bpm: number): number => 60 / bpm;
 
 /** Position of a subdivision inside its beat, 0–1. Swing applies to 2 and 4 only. */
 export function subOffset(sub: number, count: number, swing: number): number {
@@ -67,7 +62,7 @@ export class Sequencer {
     this.beatStart = startTime;
     this.mainStart = startTime;
     this.lastStep = startTime;
-    this.beatDur = beatSeconds(this.bpm, groove);
+    this.beatDur = beatSeconds(this.bpm);
     if (this.bar === 0) this.enterBar();
   }
 
@@ -119,7 +114,7 @@ export class Sequencer {
     this.beatStart += this.beatDur;
     const { groove } = this.get();
     if (this.beat >= groove.beats) this.nextBar();
-    this.beatDur = beatSeconds(this.bpm, groove);
+    this.beatDur = beatSeconds(this.bpm);
   }
 
   private nextBar(): void {

@@ -1,10 +1,10 @@
 import './style.css';
 import { askText, confirmDialog, el, pickSongs, toast } from './dialogs';
 import { Engine } from './engine';
+import { subdivisionIcon } from './notation';
 import type { Slot } from './sequencer';
 import {
   defaultAccents,
-  defaultTempoNote,
   exportLibrary,
   grooveLabel,
   importLibrary,
@@ -14,10 +14,11 @@ import {
   sameGroove,
   save,
   subdivisionName,
+  swingLabel,
   swingPreset,
   uid,
 } from './store';
-import { BPM_MAX, BPM_MIN, type Level, type Setlist, type Song, type SoundId, type TempoNote, type Unit } from './types';
+import { BPM_MAX, BPM_MIN, type Level, type Setlist, type Song, type SoundId, type Unit } from './types';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
@@ -211,12 +212,10 @@ beatsEl.addEventListener('click', (e) => {
 
 function setMeter(beats: number, unit: Unit): void {
   const g = state.groove;
-  const noteWasDefault = g.tempoNote === defaultTempoNote(g.beats, g.unit);
-  const accentsWereDefault = sameAccents(g.accents, defaultAccents(g.beats, g.tempoNote));
+  const accentsWereDefault = sameAccents(g.accents, defaultAccents(g.beats, g.unit));
   g.beats = clamp(beats, 1, 20);
   g.unit = unit;
-  if (noteWasDefault || unit === 4 || unit === 2) g.tempoNote = defaultTempoNote(g.beats, unit);
-  if (accentsWereDefault) g.accents = defaultAccents(g.beats, g.tempoNote);
+  if (accentsWereDefault) g.accents = defaultAccents(g.beats, unit);
   else g.accents = Array.from({ length: g.beats }, (_, i) => g.accents[i] ?? 1);
   commit();
 }
@@ -227,7 +226,7 @@ $('rhythm-btn').addEventListener('click', () => sigDlg.showModal());
 $('beats-dec').addEventListener('click', () => setMeter(state.groove.beats - 1, state.groove.unit));
 $('beats-inc').addEventListener('click', () => setMeter(state.groove.beats + 1, state.groove.unit));
 $('accents-reset').addEventListener('click', () => {
-  state.groove.accents = defaultAccents(state.groove.beats, state.groove.tempoNote);
+  state.groove.accents = defaultAccents(state.groove.beats, state.groove.unit);
   commit();
 });
 seg(
@@ -235,23 +234,11 @@ seg(
   () => String(state.groove.unit),
   (v) => setMeter(state.groove.beats, Number(v) as Unit),
 );
-seg(
-  'tempo-note',
-  () => state.groove.tempoNote,
-  (v) => {
-    const g = state.groove;
-    const accentsWereDefault = sameAccents(g.accents, defaultAccents(g.beats, g.tempoNote));
-    g.tempoNote = v as TempoNote;
-    if (accentsWereDefault) g.accents = defaultAccents(g.beats, g.tempoNote);
-  },
-);
 syncers.push(() => {
   const g = state.groove;
   $('rhythm-sig').textContent = `${g.beats}/${g.unit}`;
   $('sig-beats').textContent = String(g.beats);
   $('sig-unit').textContent = String(g.unit);
-  // In /4 and /2 the click is the counted note, so there is nothing to choose.
-  $('tempo-note-wrap').hidden = g.unit === 4 || g.unit === 2;
 });
 
 seg(
@@ -267,10 +254,18 @@ seg(
 syncers.push(() => {
   const g = state.groove;
   for (const b of $('subdivision').querySelectorAll<HTMLButtonElement>('button')) {
-    b.textContent = subdivisionName(Number(b.dataset.v), g.unit);
+    const count = Number(b.dataset.v);
+    const name = count === 1 ? 'No subdivision' : subdivisionName(count, g.unit);
+    b.replaceChildren(subdivisionIcon(count, g.unit));
+    b.setAttribute('aria-label', name);
+    b.title = name;
   }
-  $('swing-wrap').hidden = !canSwing(g);
-  $('rhythm-detail').textContent = rhythmDetail(g) || 'No subdivision';
+  const swingOk = canSwing(g);
+  for (const b of $('swing').querySelectorAll<HTMLButtonElement>('button')) b.disabled = !swingOk;
+  $('swing-note').hidden = swingOk;
+  $('rhythm-notes').replaceChildren(subdivisionIcon(g.subdivision, g.unit));
+  $('rhythm-detail').textContent = swingLabel(g);
+  $('rhythm-btn').setAttribute('aria-label', `Rhythm: ${g.beats}/${g.unit}, ${rhythmDetail(g) || 'no subdivision'}`);
 });
 
 // ───────────────────────── practice ─────────────────────────

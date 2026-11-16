@@ -523,6 +523,15 @@ input.bpm {
   min-height: 52px;
 }
 
+.rhythm .notes {
+  height: 34px;
+  width: auto;
+}
+
+.rhythm span:empty {
+  display: none;
+}
+
 .rhythm b {
   font-size: 20px;
   font-variant-numeric: tabular-nums;
@@ -793,18 +802,30 @@ dialog .group {
   gap: 14px;
 }
 
-#tempo-note-wrap {
-  gap: 8px;
-}
-
 .seg.tiles {
   grid-auto-flow: row;
   grid-template-columns: repeat(3, 1fr);
 }
 
 .seg.tiles button {
-  min-height: 44px;
+  min-height: 54px;
   padding: 0 4px;
+  color: var(--text);
+}
+
+.seg.tiles button.on {
+  color: #130600;
+}
+
+.notes {
+  display: block;
+  margin: auto;
+  fill: currentColor;
+}
+
+#swing-note {
+  margin-top: -6px;
+  font-size: 13px;
 }
 
 .picklist {

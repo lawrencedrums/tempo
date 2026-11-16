@@ -7,8 +7,8 @@ A metronome for drummers that runs in the browser and installs as an app (PWA) o
 ## Features
 
 - Tempo from 20 to 400 BPM: dial, ±1/±5, typed entry, tap tempo
-- Time signatures from 1 to 20 beats over 2, 4, 8 or 16, with the BPM counting quarters, dotted quarters or each click
-- Subdivisions from 2 to 6 per beat, named for the meter (8ths, triplets, 16ths…), with swing presets and a separate subdivision volume
+- Time signatures from 1 to 20 beats over 2, 4, 8 or 16; the BPM is always clicks per minute
+- Subdivisions from 2 to 6 per beat, shown as notation for the meter, with swing presets and a separate subdivision volume
 - Per-beat accents: tap a beat to step through strong, accent, normal and muted
 - Tempo trainer, gap click (fixed or random muted bars), count-in and practice timer
 - Songs and setlists, with export and import as a JSON file

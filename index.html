@@ -50,7 +50,7 @@
         </div>
 
         <button id="rhythm-btn" class="btn rhythm" aria-haspopup="dialog">
-          <b id="rhythm-sig">4/4</b><span id="rhythm-detail" class="dim"></span>
+          <b id="rhythm-sig">4/4</b><span id="rhythm-notes"></span><span id="rhythm-detail" class="dim"></span>
         </button>
 
         <div class="transport">
@@ -161,26 +161,19 @@
           <button type="button" data-v="2">/2</button><button type="button" data-v="4">/4</button>
           <button type="button" data-v="8">/8</button><button type="button" data-v="16">/16</button>
         </div>
-        <div id="tempo-note-wrap" class="group">
-          <p class="dim">The BPM number counts</p>
-          <div id="tempo-note" class="seg">
-            <button type="button" data-v="quarter">Quarters</button>
-            <button type="button" data-v="dotted">Dotted</button>
-            <button type="button" data-v="beat">Each click</button>
-          </div>
-        </div>
         <h4>Subdivision</h4>
         <div id="subdivision" class="seg tiles">
           <button type="button" data-v="1"></button><button type="button" data-v="2"></button>
           <button type="button" data-v="3"></button><button type="button" data-v="4"></button>
           <button type="button" data-v="5"></button><button type="button" data-v="6"></button>
         </div>
-        <div id="swing-wrap" class="group">
+        <div class="group">
           <h4>Swing</h4>
           <div id="swing" class="seg">
             <button type="button" data-v="50">Off</button><button type="button" data-v="58">Light</button>
             <button type="button" data-v="67">Triplet</button><button type="button" data-v="75">Hard</button>
           </div>
+          <p id="swing-note" class="dim">Swing needs a subdivision of two or four.</p>
         </div>
         <div class="dlg-actions">
           <button type="button" id="accents-reset" class="btn">Reset accents</button>
