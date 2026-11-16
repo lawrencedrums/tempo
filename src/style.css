@@ -823,11 +823,6 @@ dialog .group {
   fill: currentColor;
 }
 
-#swing-note {
-  margin-top: -6px;
-  font-size: 13px;
-}
-
 .picklist {
   display: flex;
   flex-direction: column;

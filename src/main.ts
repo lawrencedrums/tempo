@@ -262,7 +262,6 @@ syncers.push(() => {
   }
   const swingOk = canSwing(g);
   for (const b of $('swing').querySelectorAll<HTMLButtonElement>('button')) b.disabled = !swingOk;
-  $('swing-note').hidden = swingOk;
   $('rhythm-notes').replaceChildren(subdivisionIcon(g.subdivision, g.unit));
   $('rhythm-detail').textContent = swingLabel(g);
   $('rhythm-btn').setAttribute('aria-label', `Rhythm: ${g.beats}/${g.unit}, ${rhythmDetail(g) || 'no subdivision'}`);
