@@ -49,23 +49,9 @@
           <button class="btn" data-nudge="5">+5</button>
         </div>
 
-        <div class="groove-row">
-          <button id="sig-btn" class="btn sig" aria-label="Time signature">4/4</button>
-          <div id="subdivision" class="seg" aria-label="Clicks per beat">
-            <button data-v="1">1</button>
-            <button data-v="2">2</button>
-            <button data-v="3">3</button>
-            <button data-v="4">4</button>
-            <button data-v="5">5</button>
-            <button data-v="6">6</button>
-          </div>
-        </div>
-
-        <label id="swing-row" class="slider-row">
-          <span>Swing</span>
-          <input id="swing" type="range" min="50" max="75" step="1" />
-          <output id="swing-out"></output>
-        </label>
+        <button id="rhythm-btn" class="btn rhythm" aria-haspopup="dialog">
+          <b id="rhythm-sig">4/4</b><span id="rhythm-detail" class="dim"></span>
+        </button>
 
         <div class="transport">
           <button id="tap" class="btn tap">Tap</button>
@@ -153,6 +139,7 @@
               <dt><kbd>Space</kbd></dt><dd>Start or stop</dd>
               <dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Tempo ±1 (hold Shift for ±5)</dd>
               <dt><kbd>T</kbd></dt><dd>Tap tempo</dd>
+              <dt><kbd>1</kbd>–<kbd>6</kbd></dt><dd>Subdivision</dd>
               <dt><kbd>[</kbd> <kbd>]</kbd></dt><dd>Previous or next song</dd>
               <dt><kbd>M</kbd></dt><dd>Open or close this menu</dd>
             </dl>
@@ -163,7 +150,8 @@
 
     <dialog id="sig-dlg">
       <form method="dialog">
-        <h3>Time signature</h3>
+        <h3>Rhythm</h3>
+        <h4>Time signature</h4>
         <div class="stepper">
           <button type="button" id="beats-dec" class="btn" aria-label="Fewer beats">−</button>
           <div class="sig-big"><span id="sig-beats">4</span><span class="sig-line"></span><span id="sig-unit">4</span></div>
@@ -173,12 +161,25 @@
           <button type="button" data-v="2">/2</button><button type="button" data-v="4">/4</button>
           <button type="button" data-v="8">/8</button><button type="button" data-v="16">/16</button>
         </div>
-        <div id="tempo-note-wrap">
+        <div id="tempo-note-wrap" class="group">
           <p class="dim">The BPM number counts</p>
           <div id="tempo-note" class="seg">
-            <button type="button" data-v="quarter">Quarter notes</button>
-            <button type="button" data-v="dotted">Dotted quarters</button>
+            <button type="button" data-v="quarter">Quarters</button>
+            <button type="button" data-v="dotted">Dotted</button>
             <button type="button" data-v="beat">Each click</button>
+          </div>
+        </div>
+        <h4>Subdivision</h4>
+        <div id="subdivision" class="seg tiles">
+          <button type="button" data-v="1"></button><button type="button" data-v="2"></button>
+          <button type="button" data-v="3"></button><button type="button" data-v="4"></button>
+          <button type="button" data-v="5"></button><button type="button" data-v="6"></button>
+        </div>
+        <div id="swing-wrap" class="group">
+          <h4>Swing</h4>
+          <div id="swing" class="seg">
+            <button type="button" data-v="50">Off</button><button type="button" data-v="58">Light</button>
+            <button type="button" data-v="67">Triplet</button><button type="button" data-v="75">Hard</button>
           </div>
         </div>
         <div class="dlg-actions">

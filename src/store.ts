@@ -208,7 +208,47 @@ export function importLibrary(state: AppState, text: string): { songs: number; s
 
 export const sameGroove = (a: Groove, b: Groove): boolean => JSON.stringify(a) === JSON.stringify(b);
 
+/** Name of a subdivision in a given meter: 2 per click is "8ths" in /4 but "16ths" in /8. */
+export function subdivisionName(count: number, unit: Unit): string {
+  const straight = (n: number) => (n === 4 ? 'Quarters' : n === 32 ? '32nds' : `${n}ths`);
+  switch (count) {
+    case 2:
+      return straight(unit * 2);
+    case 3:
+      return 'Triplets';
+    case 4:
+      return straight(unit * 4);
+    case 5:
+      return 'Quintuplets';
+    case 6:
+      return 'Sextuplets';
+    default:
+      return 'Off';
+  }
+}
+
+export const SWING_PRESETS = [
+  { value: 50, name: 'Off' },
+  { value: 58, name: 'Light' },
+  { value: 67, name: 'Triplet' },
+  { value: 75, name: 'Hard' },
+] as const;
+
+/** The preset closest to a stored swing amount. */
+export function swingPreset(swing: number): (typeof SWING_PRESETS)[number] {
+  return SWING_PRESETS.reduce((best, p) => (Math.abs(p.value - swing) < Math.abs(best.value - swing) ? p : best));
+}
+
+export const canSwing = (g: Groove): boolean => g.subdivision === 2 || g.subdivision === 4;
+
+/** Subdivision and swing in words, or an empty string when both are off. */
+export function rhythmDetail(g: Groove): string {
+  if (g.subdivision === 1) return '';
+  const swing = canSwing(g) ? swingPreset(g.swing) : SWING_PRESETS[0];
+  return subdivisionName(g.subdivision, g.unit) + (swing.value > 50 ? ` · ${swing.name.toLowerCase()} swing` : '');
+}
+
 export function grooveLabel(g: Groove): string {
-  const sub = g.subdivision > 1 ? ` · ÷${g.subdivision}` : '';
-  return `${g.bpm} BPM · ${g.beats}/${g.unit}${sub}`;
+  const detail = rhythmDetail(g);
+  return `${g.bpm} BPM · ${g.beats}/${g.unit}${detail ? ` · ${detail}` : ''}`;
 }

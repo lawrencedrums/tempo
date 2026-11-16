@@ -8,9 +8,13 @@ import {
   exportLibrary,
   grooveLabel,
   importLibrary,
+  canSwing,
   load,
+  rhythmDetail,
   sameGroove,
   save,
+  subdivisionName,
+  swingPreset,
   uid,
 } from './store';
 import { BPM_MAX, BPM_MIN, type Level, type Setlist, type Song, type SoundId, type TempoNote, type Unit } from './types';
@@ -219,7 +223,7 @@ function setMeter(beats: number, unit: Unit): void {
 const sameAccents = (a: Level[], b: Level[]) => a.length === b.length && a.every((v, i) => v === b[i]);
 
 const sigDlg = $<HTMLDialogElement>('sig-dlg');
-$('sig-btn').addEventListener('click', () => sigDlg.showModal());
+$('rhythm-btn').addEventListener('click', () => sigDlg.showModal());
 $('beats-dec').addEventListener('click', () => setMeter(state.groove.beats - 1, state.groove.unit));
 $('beats-inc').addEventListener('click', () => setMeter(state.groove.beats + 1, state.groove.unit));
 $('accents-reset').addEventListener('click', () => {
@@ -243,7 +247,7 @@ seg(
 );
 syncers.push(() => {
   const g = state.groove;
-  $('sig-btn').textContent = `${g.beats}/${g.unit}`;
+  $('rhythm-sig').textContent = `${g.beats}/${g.unit}`;
   $('sig-beats').textContent = String(g.beats);
   $('sig-unit').textContent = String(g.unit);
   // In /4 and /2 the click is the counted note, so there is nothing to choose.
@@ -255,15 +259,18 @@ seg(
   () => String(state.groove.subdivision),
   (v) => (state.groove.subdivision = Number(v)),
 );
-range(
+seg(
   'swing',
-  () => state.groove.swing,
-  (v) => (state.groove.swing = v),
+  () => String(swingPreset(state.groove.swing).value),
+  (v) => (state.groove.swing = Number(v)),
 );
 syncers.push(() => {
   const g = state.groove;
-  $('swing-row').hidden = g.subdivision !== 2 && g.subdivision !== 4;
-  $('swing-out').textContent = g.swing === 50 ? 'Off' : `${g.swing}%`;
+  for (const b of $('subdivision').querySelectorAll<HTMLButtonElement>('button')) {
+    b.textContent = subdivisionName(Number(b.dataset.v), g.unit);
+  }
+  $('swing-wrap').hidden = !canSwing(g);
+  $('rhythm-detail').textContent = rhythmDetail(g) || 'No subdivision';
 });
 
 // ───────────────────────── practice ─────────────────────────
@@ -704,6 +711,15 @@ document.addEventListener('keydown', (e) => {
     case 't':
     case 'T':
       tap();
+      break;
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+      state.groove.subdivision = Number(e.key);
+      commit();
       break;
     case 'm':
     case 'M':

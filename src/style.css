@@ -514,25 +514,18 @@ input.bpm {
   gap: 8px;
 }
 
-.groove-row {
+.rhythm {
   flex: none;
   display: flex;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
 }
 
-.groove-row .sig {
-  flex: none;
-  min-width: 72px;
-  font-size: 18px;
+.rhythm b {
+  font-size: 20px;
   font-variant-numeric: tabular-nums;
-}
-
-.groove-row .seg {
-  flex: 1;
-}
-
-.groove-row .seg button {
-  padding: 0;
 }
 
 .slider-row {
@@ -735,6 +728,8 @@ dialog::backdrop {
 }
 
 dialog form {
+  max-height: 92dvh;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -783,15 +778,33 @@ dialog h3 {
   background: var(--text);
 }
 
-#tempo-note-wrap {
+dialog h4 {
+  margin: 4px 0 -6px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+dialog .group {
   display: flex;
   flex-direction: column;
+  gap: 14px;
+}
+
+#tempo-note-wrap {
   gap: 8px;
 }
 
-#tempo-note {
-  display: flex;
-  flex-direction: column;
+.seg.tiles {
+  grid-auto-flow: row;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.seg.tiles button {
+  min-height: 44px;
+  padding: 0 4px;
 }
 
 .picklist {
