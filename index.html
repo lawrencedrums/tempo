@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0a0a0b" />
+    <meta name="description" content="A metronome for drummers: fast tempos, odd meters, tempo trainer, gap click and setlists." />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icon-192.png" />
+    <title>Downbeat</title>
+  </head>
+  <body data-tab="play">
+    <div id="flash"></div>
+    <div class="app">
+      <main id="view-play" class="view">
+        <header class="songbar">
+          <button id="song-prev" class="icon-btn" aria-label="Previous song">‹</button>
+          <div class="songinfo">
+            <div id="song-name">No song loaded</div>
+            <div id="song-meta" class="dim"></div>
+          </div>
+          <button id="song-next" class="icon-btn" aria-label="Next song">›</button>
+        </header>
+
+        <div id="beats" class="beats" aria-label="Beats: tap one to change its accent"></div>
+        <div id="subdots" class="subdots"></div>
+        <div id="status" class="status"></div>
+
+        <div class="dial-row">
+          <div id="dial" class="dial">
+            <div id="dial-ring" class="dial-ring"><span class="dial-knob"></span></div>
+            <div class="dial-face">
+              <input id="bpm" class="bpm" type="number" inputmode="numeric" min="20" max="400" aria-label="Tempo in BPM" />
+              <span class="bpm-label">BPM</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="nudges">
+          <button class="btn" data-nudge="-5">−5</button>
+          <button class="btn" data-nudge="-1">−1</button>
+          <button class="btn" data-nudge="1">+1</button>
+          <button class="btn" data-nudge="5">+5</button>
+        </div>
+
+        <div class="groove-row">
+          <button id="sig-btn" class="btn sig" aria-label="Time signature">4/4</button>
+          <div id="subdivision" class="seg" aria-label="Clicks per beat">
+            <button data-v="1">1</button>
+            <button data-v="2">2</button>
+            <button data-v="3">3</button>
+            <button data-v="4">4</button>
+            <button data-v="5">5</button>
+            <button data-v="6">6</button>
+          </div>
+        </div>
+
+        <label id="swing-row" class="slider-row">
+          <span>Swing</span>
+          <input id="swing" type="range" min="50" max="75" step="1" />
+          <output id="swing-out"></output>
+        </label>
+
+        <div class="transport">
+          <button id="tap" class="btn tap">Tap</button>
+          <button id="play" class="btn play">Start</button>
+        </div>
+      </main>
+
+      <section class="side">
+        <nav class="nav">
+          <button data-tab="play">Click</button>
+          <button data-tab="practice">Practice</button>
+          <button data-tab="songs">Songs</button>
+          <button data-tab="settings">Settings</button>
+        </nav>
+
+        <section id="view-practice" class="view">
+          <div class="card">
+            <label class="card-head"><span>Tempo trainer</span><input id="tr-on" type="checkbox" class="switch" /></label>
+            <p class="dim">Moves the tempo towards a target as you play. It returns to your starting tempo when you stop.</p>
+            <div class="field"><span>Change by</span><input id="tr-step" type="number" inputmode="numeric" /><span>BPM</span></div>
+            <div class="field">
+              <span>Every</span><input id="tr-every" type="number" inputmode="numeric" />
+              <div id="tr-mode" class="seg small"><button data-v="bars">bars</button><button data-v="seconds">seconds</button></div>
+            </div>
+            <div class="field"><span>Until</span><input id="tr-target" type="number" inputmode="numeric" /><span>BPM</span></div>
+          </div>
+
+          <div class="card">
+            <label class="card-head"><span>Gap click</span><input id="gap-on" type="checkbox" class="switch" /></label>
+            <p class="dim">Silences whole bars so you have to hold the time yourself.</p>
+            <div class="field"><span>Play</span><input id="gap-play" type="number" inputmode="numeric" /><span>bars</span></div>
+            <div class="field"><span>Mute</span><input id="gap-mute" type="number" inputmode="numeric" /><span>bars</span></div>
+            <label class="field"><span>Mute at random instead</span><input id="gap-random" type="checkbox" class="switch" /></label>
+            <div class="field"><span>Chance per bar</span><input id="gap-chance" type="number" inputmode="numeric" /><span>%</span></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><span>Count-in</span></div>
+            <div id="count-in" class="seg">
+              <button data-v="0">Off</button><button data-v="1">1 bar</button><button data-v="2">2 bars</button><button data-v="4">4 bars</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <label class="card-head"><span>Practice timer</span><input id="timer-on" type="checkbox" class="switch" /></label>
+            <div class="field">
+              <span>Stop after</span><input id="timer-amount" type="number" inputmode="numeric" />
+              <div id="timer-mode" class="seg small"><button data-v="minutes">minutes</button><button data-v="bars">bars</button></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="view-songs" class="view"></section>
+
+        <section id="view-settings" class="view">
+          <div class="card">
+            <div class="card-head"><span>Click sound</span></div>
+            <p class="dim">Saved with each song.</p>
+            <div id="sound" class="seg wrap">
+              <button data-v="click">Click</button><button data-v="beep">Beep</button><button data-v="wood">Wood</button>
+              <button data-v="cowbell">Cowbell</button><button data-v="rim">Rim</button><button data-v="hat">Hat</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><span>Volume</span></div>
+            <label class="slider-row"><span>Click</span><input id="volume" type="range" min="0" max="1" step="0.01" /></label>
+            <label class="slider-row"><span>Subdivisions</span><input id="sub-volume" type="range" min="0" max="1" step="0.01" /></label>
+            <label class="field"><span>Volume boost</span><input id="boost" type="checkbox" class="switch" /></label>
+            <p class="dim">Boost is much louder. Turn your headphones down before switching it on.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><span>Display</span></div>
+            <label class="field"><span>Flash the screen on beat one</span><input id="flash-on" type="checkbox" class="switch" /></label>
+            <label class="slider-row">
+              <span>Audio delay</span><input id="latency" type="range" min="0" max="500" step="5" /><output id="latency-out"></output>
+            </label>
+            <p class="dim">With Bluetooth headphones the click arrives late. Raise this until the beat display matches what you hear.</p>
+          </div>
+
+          <div class="card keys">
+            <div class="card-head"><span>Keyboard</span></div>
+            <dl>
+              <dt><kbd>Space</kbd></dt><dd>Start or stop</dd>
+              <dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Tempo ±1 (hold Shift for ±5)</dd>
+              <dt><kbd>T</kbd></dt><dd>Tap tempo</dd>
+              <dt><kbd>[</kbd> <kbd>]</kbd></dt><dd>Previous or next song</dd>
+            </dl>
+          </div>
+        </section>
+      </section>
+    </div>
+
+    <dialog id="sig-dlg">
+      <form method="dialog">
+        <h3>Time signature</h3>
+        <div class="stepper">
+          <button type="button" id="beats-dec" class="btn" aria-label="Fewer beats">−</button>
+          <div class="sig-big"><span id="sig-beats">4</span><span class="sig-line"></span><span id="sig-unit">4</span></div>
+          <button type="button" id="beats-inc" class="btn" aria-label="More beats">+</button>
+        </div>
+        <div id="unit" class="seg">
+          <button type="button" data-v="2">/2</button><button type="button" data-v="4">/4</button>
+          <button type="button" data-v="8">/8</button><button type="button" data-v="16">/16</button>
+        </div>
+        <div id="tempo-note-wrap">
+          <p class="dim">The BPM number counts</p>
+          <div id="tempo-note" class="seg">
+            <button type="button" data-v="quarter">Quarter notes</button>
+            <button type="button" data-v="dotted">Dotted quarters</button>
+            <button type="button" data-v="beat">Each click</button>
+          </div>
+        </div>
+        <div class="dlg-actions">
+          <button type="button" id="accents-reset" class="btn">Reset accents</button>
+          <button class="btn primary">Done</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="dlg"></dialog>
+    <div id="toast" role="status"></div>
+    <input id="import-file" type="file" accept="application/json,.json" hidden />
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
