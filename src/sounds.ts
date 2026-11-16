@@ -25,7 +25,7 @@ const square = (ph: number) => (Math.sin(ph) >= 0 ? 1 : -1);
 const defs: Record<SoundId, { dur: number; fn: Synth }> = {
   click: {
     dur: 0.04,
-    fn: (t, _i, v) => Math.sin(TAU * [1200, 1800, 2400][v] * t) * Math.exp(-t / 0.006),
+    fn: (t, _i, v) => Math.sin(TAU * [1000, 1500, 2000][v] * t) * Math.exp(-t / 0.006),
   },
   beep: {
     dur: 0.07,
