@@ -17,7 +17,7 @@ export interface EngineInput {
 export class Engine {
   playing = false;
   onSlot: (slot: Slot) => void = () => {};
-  onEnd: () => void = () => {};
+  onEnd: (reason: 'timer' | 'trainer') => void = () => {};
 
   private ctx: AudioContext | null = null;
   private master!: GainNode;
@@ -139,8 +139,9 @@ export class Engine {
     }
     if (this.endAt !== null && now >= this.endAt) {
       this.flushVisuals();
+      const reason = this.seq.endReason ?? 'timer';
       this.halt();
-      this.onEnd();
+      this.onEnd(reason);
     }
   }
 

@@ -40,6 +40,8 @@ export function subOffset(sub: number, count: number, swing: number): number {
 export class Sequencer {
   bpm: number;
   endTime: number | null = null;
+  /** What ended the sequence, once it has ended. */
+  endReason: 'timer' | 'trainer' | null = null;
 
   private bar: number;
   private beat = 0;
@@ -83,6 +85,7 @@ export class Sequencer {
     if (!countIn && t.on && t.mode === 'minutes' && time - this.mainStart >= t.amount * 60 - 1e-9) {
       this.ended = true;
       this.endTime = time;
+      this.endReason = 'timer';
       return null;
     }
 
@@ -136,6 +139,7 @@ export class Sequencer {
     if (timer.on && timer.mode === 'bars' && this.bar >= timer.amount) {
       this.ended = true;
       this.endTime = this.beatStart;
+      this.endReason = 'timer';
       return;
     }
 
@@ -148,6 +152,14 @@ export class Sequencer {
       if (due) {
         this.lastStep = this.beatStart;
         const step = Math.abs(tr.step);
+        // With stop on, a step that would overshoot the target ends the run
+        // instead of being clamped to it.
+        if (tr.stop && Math.abs(tr.target - this.bpm) < step) {
+          this.ended = true;
+          this.endTime = this.beatStart;
+          this.endReason = 'trainer';
+          return;
+        }
         if (tr.target > this.bpm) this.bpm = Math.min(tr.target, this.bpm + step);
         else if (tr.target < this.bpm) this.bpm = Math.max(tr.target, this.bpm - step);
       }

@@ -14,7 +14,7 @@ const groove = (over: Partial<Groove> = {}): Groove => ({
 });
 
 const practice = (over: Partial<Practice> = {}): Practice => ({
-  trainer: { on: false, step: 5, every: 4, mode: 'bars', target: 200 },
+  trainer: { on: false, step: 5, every: 4, mode: 'bars', target: 200, stop: false },
   gap: { on: false, play: 2, mute: 2, random: false, chance: 30 },
   countIn: 0,
   timer: { on: false, amount: 5, mode: 'minutes' },
@@ -77,14 +77,30 @@ describe('Sequencer', () => {
   });
 
   it('steps the tempo up to the target and stops there', () => {
-    const p = practice({ trainer: { on: true, step: 5, every: 2, mode: 'bars', target: 128 } });
+    const p = practice({ trainer: { on: true, step: 5, every: 2, mode: 'bars', target: 128, stop: false } });
     const { slots } = take({ groove: groove(), practice: p }, 28);
     const bpmAtBar = (b: number) => slots.find((s) => s.bar === b)!.bpm;
     expect([0, 1, 2, 3, 4, 6].map(bpmAtBar)).toEqual([120, 120, 125, 125, 128, 128]);
   });
 
+  it('stops instead of stepping past the target', () => {
+    const p = practice({ trainer: { on: true, step: 5, every: 2, mode: 'bars', target: 128, stop: true } });
+    const { slots, seq } = take({ groove: groove(), practice: p }, 50);
+    // 120 for two bars, 125 for two bars, then 130 would overshoot.
+    expect(slots).toHaveLength(16);
+    expect(slots.at(-1)!.bpm).toBe(125);
+    expect(seq.endReason).toBe('trainer');
+    expect(seq.endTime).toBeCloseTo(4 + 8 * (60 / 125), 9);
+  });
+
+  it('plays the target tempo before stopping when a step lands on it', () => {
+    const p = practice({ trainer: { on: true, step: 5, every: 1, mode: 'bars', target: 110, stop: true } });
+    const { slots } = take({ groove: groove(), practice: p }, 50);
+    expect(slots.filter((s) => s.beat === 0).map((s) => s.bpm)).toEqual([120, 115, 110]);
+  });
+
   it('steps the tempo down by seconds', () => {
-    const p = practice({ trainer: { on: true, step: 10, every: 4, mode: 'seconds', target: 100 } });
+    const p = practice({ trainer: { on: true, step: 10, every: 4, mode: 'seconds', target: 100, stop: false } });
     const { slots } = take({ groove: groove(), practice: p }, 20);
     const bpmAtBar = (b: number) => slots.find((s) => s.bar === b)!.bpm;
     // Bars are 2 s at 120, so the first step lands on bar 2.

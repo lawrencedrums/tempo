@@ -83,6 +83,7 @@ function sanitizePractice(x: unknown): Practice {
       every: int(tr.every, 1, 600, 4),
       mode: oneOf(tr.mode, ['bars', 'seconds'] as const, 'bars'),
       target: int(tr.target, BPM_MIN, BPM_MAX, 200),
+      stop: tr.stop === true,
     },
     gap: {
       on: gap.on === true,
