@@ -275,6 +275,7 @@ num('tr-step', () => p.trainer.step, (v) => (p.trainer.step = v), 1, 50);
 num('tr-every', () => p.trainer.every, (v) => (p.trainer.every = v), 1, 600);
 seg('tr-mode', () => p.trainer.mode, (v) => (p.trainer.mode = v as 'bars' | 'seconds'));
 num('tr-target', () => p.trainer.target, (v) => (p.trainer.target = v), BPM_MIN, BPM_MAX);
+check('tr-stop', () => p.trainer.stop, (v) => (p.trainer.stop = v));
 check('gap-on', () => p.gap.on, (v) => (p.gap.on = v));
 num('gap-play', () => p.gap.play, (v) => (p.gap.play = v), 1, 64);
 num('gap-mute', () => p.gap.mute, (v) => (p.gap.mute = v), 1, 64);
@@ -384,9 +385,9 @@ function showStopped(): void {
   syncAll();
 }
 
-engine.onEnd = () => {
+engine.onEnd = (reason) => {
   showStopped();
-  toast('Practice timer finished');
+  toast(reason === 'trainer' ? 'Tempo trainer finished' : 'Practice timer finished');
 };
 
 async function start(): Promise<void> {

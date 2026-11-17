@@ -21,7 +21,7 @@ export interface Groove {
 }
 
 export interface Practice {
-  trainer: { on: boolean; step: number; every: number; mode: 'bars' | 'seconds'; target: number };
+  trainer: { on: boolean; step: number; every: number; mode: 'bars' | 'seconds'; target: number; stop: boolean };
   gap: { on: boolean; play: number; mute: number; random: boolean; chance: number };
   /** Bars of count-in, 0 for none. */
   countIn: number;
