@@ -37,11 +37,12 @@
         <div id="status" class="status"></div>
 
         <div class="dial-row">
-          <div class="nudge-col">
-            <button class="btn nudge" data-nudge="-1" aria-label="Decrease tempo by 1">−1</button>
-            <button class="btn nudge" data-nudge="-5" aria-label="Decrease tempo by 5">−5</button>
-          </div>
           <div class="dial-wrap">
+            <!-- data-arc: start and end angle in degrees, clockwise from 12 o'clock -->
+            <button class="arc-btn" data-nudge="1" data-arc="22 88" aria-label="Increase tempo by 1"><span>+1</span></button>
+            <button class="arc-btn" data-nudge="5" data-arc="92 158" aria-label="Increase tempo by 5"><span>+5</span></button>
+            <button class="arc-btn" data-nudge="-5" data-arc="202 268" aria-label="Decrease tempo by 5"><span>−5</span></button>
+            <button class="arc-btn" data-nudge="-1" data-arc="272 338" aria-label="Decrease tempo by 1"><span>−1</span></button>
             <div id="dial" class="dial">
               <div id="dial-ring" class="dial-ring"><span class="dial-knob"></span></div>
               <div class="dial-face">
@@ -49,10 +50,6 @@
                 <span class="bpm-label">BPM</span>
               </div>
             </div>
-          </div>
-          <div class="nudge-col">
-            <button class="btn nudge" data-nudge="1" aria-label="Increase tempo by 1">+1</button>
-            <button class="btn nudge" data-nudge="5" aria-label="Increase tempo by 5">+5</button>
           </div>
         </div>
 

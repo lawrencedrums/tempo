@@ -120,6 +120,38 @@ bpmInput.addEventListener('keydown', (e) => {
 
 for (const b of document.querySelectorAll<HTMLButtonElement>('[data-nudge]')) {
   b.addEventListener('click', () => setBpm(liveBpm() + Number(b.dataset.nudge)));
+  if (b.dataset.arc) shapeArc(b, b.dataset.arc);
+}
+
+/**
+ * Clips a button to a ring segment around the dial. Radii are percentages of
+ * the dial-wrap: the dial itself fills the middle 70% (radius 35%).
+ */
+function shapeArc(b: HTMLElement, arc: string): void {
+  const [from, to] = arc.split(' ').map(Number);
+  const inner = 37;
+  const outer = 50;
+  const steps = 16;
+  const at = (deg: number, r: number) => {
+    const a = (deg * Math.PI) / 180;
+    return [50 + r * Math.sin(a), 50 - r * Math.cos(a)];
+  };
+  const pts: string[] = [];
+  for (let i = 0; i <= steps; i++) {
+    const [x, y] = at(from + ((to - from) * i) / steps, outer);
+    pts.push(`${x.toFixed(2)}% ${y.toFixed(2)}%`);
+  }
+  for (let i = steps; i >= 0; i--) {
+    const [x, y] = at(from + ((to - from) * i) / steps, inner);
+    pts.push(`${x.toFixed(2)}% ${y.toFixed(2)}%`);
+  }
+  b.style.clipPath = `polygon(${pts.join(', ')})`;
+  const label = b.querySelector<HTMLElement>('span');
+  if (label) {
+    const [x, y] = at((from + to) / 2, (inner + outer) / 2);
+    label.style.left = `${x}%`;
+    label.style.top = `${y}%`;
+  }
 }
 
 // Dial: one full turn is 60 BPM.
