@@ -678,7 +678,7 @@ sideToggle.addEventListener('click', toggleSide);
 syncers.push(() => {
   document.body.classList.toggle('side-open', s.sideOpen);
   sideToggle.setAttribute('aria-expanded', String(s.sideOpen));
-  sideToggle.textContent = s.sideOpen ? 'Close menu' : 'Menu';
+  sideToggle.setAttribute('aria-label', s.sideOpen ? 'Close menu' : 'Open menu');
   $('songbar').hidden = !s.songBar;
 });
 
