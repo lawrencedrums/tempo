@@ -37,20 +37,23 @@
         <div id="status" class="status"></div>
 
         <div class="dial-row">
-          <div id="dial" class="dial">
-            <div id="dial-ring" class="dial-ring"><span class="dial-knob"></span></div>
-            <div class="dial-face">
-              <input id="bpm" class="bpm" type="number" inputmode="numeric" min="20" max="400" aria-label="Tempo in BPM" />
-              <span class="bpm-label">BPM</span>
+          <div class="nudge-col">
+            <button class="btn nudge" data-nudge="-1" aria-label="Decrease tempo by 1">−1</button>
+            <button class="btn nudge" data-nudge="-5" aria-label="Decrease tempo by 5">−5</button>
+          </div>
+          <div class="dial-wrap">
+            <div id="dial" class="dial">
+              <div id="dial-ring" class="dial-ring"><span class="dial-knob"></span></div>
+              <div class="dial-face">
+                <input id="bpm" class="bpm" type="number" inputmode="numeric" min="20" max="400" aria-label="Tempo in BPM" />
+                <span class="bpm-label">BPM</span>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div class="nudges">
-          <button class="btn" data-nudge="-5">−5</button>
-          <button class="btn" data-nudge="-1">−1</button>
-          <button class="btn" data-nudge="1">+1</button>
-          <button class="btn" data-nudge="5">+5</button>
+          <div class="nudge-col">
+            <button class="btn nudge" data-nudge="1" aria-label="Increase tempo by 1">+1</button>
+            <button class="btn nudge" data-nudge="5" aria-label="Increase tempo by 5">+5</button>
+          </div>
         </div>
 
         <button id="rhythm-btn" class="btn rhythm" aria-haspopup="dialog">

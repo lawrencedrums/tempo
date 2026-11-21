@@ -501,15 +501,39 @@ body.side-open .burger path:nth-child(3) {
 .dial-row {
   flex: 1;
   min-height: 150px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.dial-wrap {
+  height: 100%;
+  min-width: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   container-type: size;
 }
 
+.nudge-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+}
+
+.nudge {
+  width: 56px;
+  min-height: 52px;
+  padding: 0;
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+}
+
 .dial {
   position: relative;
-  width: min(100cqw, 100cqh, 300px);
+  width: min(100cqw, 100cqh, 280px);
   aspect-ratio: 1;
   border-radius: 50%;
   touch-action: none;
@@ -575,13 +599,6 @@ input.bpm {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.2em;
-}
-
-.nudges {
-  flex: none;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
 }
 
 .rhythm {
