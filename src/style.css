@@ -10,7 +10,7 @@
   --steel: #5d5d6b;
   --danger: #ff4d4d;
   --radius: 14px;
-  --nav-h: 58px;
+  --top-h: 56px;
   color-scheme: dark;
 }
 
@@ -84,18 +84,40 @@ p {
   padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
 }
 
+/* Phone: the click fills the screen; the Menu button opens everything else as a full-screen panel under the top bar. */
 .side {
-  display: contents;
+  position: fixed;
+  inset: calc(env(safe-area-inset-top) + var(--top-h)) 0 0 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  z-index: 20;
+}
+
+body:not(.side-open) .side {
+  display: none;
 }
 
 .view {
   display: none;
-  height: calc(100dvh - var(--nav-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom));
   overflow-y: auto;
   padding: 12px 16px 20px;
 }
 
-body[data-tab='play'] #view-play,
+#view-play {
+  height: calc(100dvh - env(safe-area-inset-top));
+  padding-top: 0;
+}
+
+.side .view {
+  flex: 1;
+  min-height: 0;
+}
+
+#view-play,
+body[data-tab='play'] #view-practice,
 body[data-tab='practice'] #view-practice,
 body[data-tab='songs'] #view-songs,
 body[data-tab='settings'] #view-settings {
@@ -105,16 +127,16 @@ body[data-tab='settings'] #view-settings {
 }
 
 .nav {
-  position: fixed;
-  inset: auto 0 0 0;
-  height: calc(var(--nav-h) + env(safe-area-inset-bottom));
-  padding-bottom: env(safe-area-inset-bottom);
+  flex: none;
+  height: 52px;
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
-  background: var(--surface);
-  border-top: 1px solid var(--line);
-  z-index: 10;
+  border-bottom: 1px solid var(--line);
+}
+
+.nav [data-tab='play'] {
+  display: none;
 }
 
 .nav button {
@@ -125,7 +147,7 @@ body[data-tab='settings'] #view-settings {
   text-transform: uppercase;
 }
 
-body[data-tab='play'] .nav [data-tab='play'],
+body[data-tab='play'] .nav [data-tab='practice'],
 body[data-tab='practice'] .nav [data-tab='practice'],
 body[data-tab='songs'] .nav [data-tab='songs'],
 body[data-tab='settings'] .nav [data-tab='settings'] {
@@ -272,7 +294,22 @@ input[type='range'] {
 /* ───────── play view ───────── */
 
 .topbar {
-  display: none;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  flex: none;
+  height: var(--top-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg);
+}
+
+.brand {
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dim);
 }
 
 .songbar {
@@ -853,7 +890,7 @@ dialog .group {
 #toast {
   position: fixed;
   left: 50%;
-  bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 16px);
+  bottom: calc(env(safe-area-inset-bottom) + 16px);
   transform: translate(-50%, 20px);
   max-width: 90vw;
   padding: 10px 16px;
@@ -884,30 +921,19 @@ dialog .group {
   }
 
   .topbar {
-    flex: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .brand {
-    font-weight: 800;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--dim);
+    position: static;
+    height: auto;
+    background: none;
   }
 
   body:not(.side-open) .app {
     grid-template-columns: minmax(380px, 460px);
   }
 
-  body:not(.side-open) .side {
-    display: none;
-  }
-
   .side {
-    display: flex;
-    flex-direction: column;
+    position: static;
+    padding: 0;
+    z-index: auto;
     min-height: 0;
     height: calc(100dvh - 48px);
     border-radius: 20px;
@@ -921,42 +947,11 @@ dialog .group {
     padding: 16px;
   }
 
-  .side .view {
-    flex: 1;
-    min-height: 0;
-  }
-
   #view-play {
-    display: flex !important;
-    flex-direction: column;
     gap: 14px;
     height: calc(100dvh - 48px);
     padding: 8px 8px 0;
     overflow: visible;
-  }
-
-  body[data-tab='play'] #view-practice {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .nav {
-    position: static;
-    flex: none;
-    height: 52px;
-    padding: 0;
-    border-top: 0;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .nav [data-tab='play'] {
-    display: none;
-  }
-
-  body[data-tab='play'] .nav [data-tab='practice'] {
-    color: var(--ember);
-    box-shadow: inset 0 2px 0 var(--ember);
   }
 
   #toast {

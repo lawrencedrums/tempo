@@ -720,6 +720,10 @@ document.addEventListener('keydown', (e) => {
     case 'M':
       toggleSide();
       break;
+    case 'Escape':
+      if (!s.sideOpen) return;
+      toggleSide();
+      break;
     case '[':
       stepSong(-1);
       break;
