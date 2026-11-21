@@ -124,31 +124,35 @@ for (const b of document.querySelectorAll<HTMLButtonElement>('[data-nudge]')) {
 }
 
 /**
- * Clips a button to a ring segment around the dial. Radii are percentages of
- * the dial-wrap: the dial itself fills the middle 70% (radius 35%).
+ * Clips a button to a ring segment around the dial, cut flat where it would
+ * rise above the dial's top or drop below its bottom. Geometry is in units of
+ * the dial-wrap's width (100); the wrap is 70 tall and the dial has radius 35.
  */
 function shapeArc(b: HTMLElement, arc: string): void {
   const [from, to] = arc.split(' ').map(Number);
+  const R = 35;
   const inner = 37;
   const outer = 50;
   const steps = 16;
-  const at = (deg: number, r: number) => {
-    const a = (deg * Math.PI) / 180;
-    return [50 + r * Math.sin(a), 50 - r * Math.cos(a)];
+  // The angles at which a circle of radius r crosses the dial's top/bottom.
+  const span = (r: number): [number, number] => {
+    const a = (Math.acos(R / r) * 180) / Math.PI;
+    return from < 180 ? [Math.max(from, a), Math.min(to, 180 - a)] : [Math.max(from, 180 + a), Math.min(to, 360 - a)];
   };
+  const at = (deg: number, r: number) => {
+    const t = (deg * Math.PI) / 180;
+    return [50 + r * Math.sin(t), ((R - r * Math.cos(t)) / (2 * R)) * 100];
+  };
+  const pct = ([x, y]: number[]) => `${x.toFixed(2)}% ${y.toFixed(2)}%`;
+  const [o0, o1] = span(outer);
+  const [i0, i1] = span(inner);
   const pts: string[] = [];
-  for (let i = 0; i <= steps; i++) {
-    const [x, y] = at(from + ((to - from) * i) / steps, outer);
-    pts.push(`${x.toFixed(2)}% ${y.toFixed(2)}%`);
-  }
-  for (let i = steps; i >= 0; i--) {
-    const [x, y] = at(from + ((to - from) * i) / steps, inner);
-    pts.push(`${x.toFixed(2)}% ${y.toFixed(2)}%`);
-  }
+  for (let i = 0; i <= steps; i++) pts.push(pct(at(o0 + ((o1 - o0) * i) / steps, outer)));
+  for (let i = steps; i >= 0; i--) pts.push(pct(at(i0 + ((i1 - i0) * i) / steps, inner)));
   b.style.clipPath = `polygon(${pts.join(', ')})`;
   const label = b.querySelector<HTMLElement>('span');
   if (label) {
-    const [x, y] = at((from + to) / 2, (inner + outer) / 2);
+    const [x, y] = at((o0 + o1 + i0 + i1) / 4, (inner + outer) / 2);
     label.style.left = `${x}%`;
     label.style.top = `${y}%`;
   }

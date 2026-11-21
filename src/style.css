@@ -508,10 +508,12 @@ body.side-open .burger path:nth-child(3) {
 }
 
 /* The dial plus the ring of nudge buttons hugging it. */
+/* As tall as the dial; the arcs stop flush with its top and bottom. */
 .dial-wrap {
+  --w: min(100cqw, 100cqh / 0.7, 460px);
   position: relative;
-  width: min(100cqw, 100cqh, 400px);
-  height: min(100cqw, 100cqh, 400px);
+  width: var(--w);
+  height: calc(var(--w) * 0.7);
   container-type: size;
 }
 
@@ -525,7 +527,7 @@ body.side-open .burger path:nth-child(3) {
   background: var(--surface-2);
   color: var(--text);
   font-weight: 700;
-  font-size: clamp(14px, 5.5cqmin, 20px);
+  font-size: clamp(14px, 7.5cqh, 20px);
   font-variant-numeric: tabular-nums;
 }
 
@@ -545,7 +547,7 @@ body.side-open .burger path:nth-child(3) {
 
 .dial {
   position: absolute;
-  inset: 15%;
+  inset: 0 15%;
   border-radius: 50%;
   touch-action: none;
   cursor: grab;
@@ -599,7 +601,7 @@ input.bpm {
   background: none;
   padding: 0;
   text-align: center;
-  font-size: clamp(32px, 15cqmin, 60px);
+  font-size: clamp(32px, 21cqh, 60px);
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.03em;

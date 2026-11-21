@@ -38,11 +38,11 @@
 
         <div class="dial-row">
           <div class="dial-wrap">
-            <!-- data-arc: start and end angle in degrees, clockwise from 12 o'clock -->
-            <button class="arc-btn" data-nudge="1" data-arc="22 88" aria-label="Increase tempo by 1"><span>+1</span></button>
-            <button class="arc-btn" data-nudge="5" data-arc="92 158" aria-label="Increase tempo by 5"><span>+5</span></button>
-            <button class="arc-btn" data-nudge="-5" data-arc="202 268" aria-label="Decrease tempo by 5"><span>−5</span></button>
-            <button class="arc-btn" data-nudge="-1" data-arc="272 338" aria-label="Decrease tempo by 1"><span>−1</span></button>
+            <!-- data-arc: start and end angle in degrees, clockwise from 12 o'clock; cut flat at the dial's top and bottom -->
+            <button class="arc-btn" data-nudge="1" data-arc="0 88" aria-label="Increase tempo by 1"><span>+1</span></button>
+            <button class="arc-btn" data-nudge="5" data-arc="92 180" aria-label="Increase tempo by 5"><span>+5</span></button>
+            <button class="arc-btn" data-nudge="-5" data-arc="180 268" aria-label="Decrease tempo by 5"><span>−5</span></button>
+            <button class="arc-btn" data-nudge="-1" data-arc="272 360" aria-label="Decrease tempo by 1"><span>−1</span></button>
             <div id="dial" class="dial">
               <div id="dial-ring" class="dial-ring"><span class="dial-knob"></span></div>
               <div class="dial-face">
