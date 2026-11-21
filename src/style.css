@@ -455,12 +455,14 @@ body.side-open .burger path:nth-child(3) {
   box-shadow: none;
 }
 
+/* As tall as the status row below the dial, so the dial sits evenly between them. */
 .subdots {
   flex: none;
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 8px;
-  height: 8px;
+  height: 24px;
 }
 
 .subdots i {
