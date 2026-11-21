@@ -143,4 +143,26 @@ describe('Sequencer', () => {
     const s = seq.next()!;
     expect(s).toMatchObject({ bar: 1, beat: 0 });
   });
+  it('applies a tempo change from the very next click', () => {
+    const { slots, seq } = take({ groove: groove({ bpm: 60 }), practice: practice() }, 2);
+    expect(times(slots)).toEqual([0, 1]);
+    seq.setBpm(120);
+    expect(+seq.next()!.time.toFixed(4)).toBe(1.5);
+    expect(+seq.next()!.time.toFixed(4)).toBe(2);
+  });
+
+  it('retimes the rest of a subdivided beat without going backwards', () => {
+    const input = { groove: groove({ bpm: 60, subdivision: 4 }), practice: practice() };
+    const { slots, seq } = take(input, 2);
+    expect(times(slots)).toEqual([0, 0.25]);
+    seq.setBpm(240);
+    const rest = [seq.next()!, seq.next()!, seq.next()!];
+    expect(times(rest)).toEqual([0.3125, 0.375, 0.4375]);
+  });
+
+  it('carries on from the same point when cloned', () => {
+    const { seq } = take({ groove: groove(), practice: practice() }, 3);
+    const copy = seq.clone();
+    expect(copy.next()).toEqual(seq.next());
+  });
 });

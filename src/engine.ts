@@ -24,6 +24,8 @@ export class Engine {
   private bank = new Map<SoundId, AudioBuffer[]>();
   private seq: Sequencer | null = null;
   private pending: Slot | null = null;
+  /** The sequencer as it was before `pending` was taken, so a tempo change can redo it. */
+  private beforePending: Sequencer | null = null;
   private queue: Slot[] = [];
   private live = new Set<AudioBufferSourceNode>();
   private endAt: number | null = null;
@@ -39,7 +41,16 @@ export class Engine {
   }
 
   setBpm(bpm: number): void {
-    if (this.seq) this.seq.bpm = bpm;
+    if (!this.seq) return;
+    // The waiting slot was timed at the old tempo; take it again at the new one.
+    if (this.pending && this.beforePending) {
+      this.seq = this.beforePending;
+      this.pending = null;
+      this.beforePending = null;
+    }
+    this.seq.setBpm(bpm);
+    // Clicks already scheduled would otherwise show the old tempo when heard.
+    for (const s of this.queue) s.bpm = bpm;
   }
 
   /** Must be called from a user gesture the first time, so the browser allows audio. */
@@ -116,6 +127,7 @@ export class Engine {
     this.live.clear();
     this.seq = null;
     this.pending = null;
+    this.beforePending = null;
     this.queue = [];
     this.endAt = null;
   }
@@ -126,6 +138,7 @@ export class Engine {
     const now = ctx.currentTime;
     while (this.endAt === null) {
       if (!this.pending) {
+        this.beforePending = this.seq.clone();
         this.pending = this.seq.next();
         if (!this.pending) {
           this.endAt = this.seq.endTime ?? now;
@@ -136,6 +149,7 @@ export class Engine {
       this.sound(this.pending, now);
       this.queue.push(this.pending);
       this.pending = null;
+      this.beforePending = null;
     }
     if (this.endAt !== null && now >= this.endAt) {
       this.flushVisuals();

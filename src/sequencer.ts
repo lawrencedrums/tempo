@@ -52,6 +52,9 @@ export class Sequencer {
   private lastStep: number;
   private barMuted = false;
   private ended = false;
+  /** Time of the last slot handed out, and its position in beats relative to beatStart. */
+  private lastTime: number | null = null;
+  private lastPos = 0;
 
   constructor(
     private get: () => SeqInput,
@@ -68,6 +71,26 @@ export class Sequencer {
     if (this.bar === 0) this.enterBar();
   }
 
+  /**
+   * Changes tempo straight away: the gap after the last slot handed out is
+   * already at the new tempo, rather than waiting for the next beat.
+   */
+  setBpm(bpm: number): void {
+    if (bpm === this.bpm) return;
+    this.bpm = bpm;
+    const old = this.beatStart;
+    this.beatDur = beatSeconds(bpm);
+    if (this.lastTime === null || this.ended) return;
+    this.beatStart = this.lastTime - this.lastPos * this.beatDur;
+    if (this.mainStart === old) this.mainStart = this.beatStart;
+    if (this.lastStep === old) this.lastStep = this.beatStart;
+  }
+
+  /** A copy that carries on independently from the same point. */
+  clone(): Sequencer {
+    return Object.assign(Object.create(Sequencer.prototype) as Sequencer, this);
+  }
+
   next(): Slot | null {
     if (this.ended) return null;
     const { groove, practice } = this.get();
@@ -79,7 +102,8 @@ export class Sequencer {
 
     const countIn = this.bar < 0;
     const count = this.subCount(groove);
-    const time = this.beatStart + subOffset(this.sub, count, groove.swing) * this.beatDur;
+    const pos = subOffset(this.sub, count, groove.swing);
+    const time = this.beatStart + pos * this.beatDur;
 
     const t = practice.timer;
     if (!countIn && t.on && t.mode === 'minutes' && time - this.mainStart >= t.amount * 60 - 1e-9) {
@@ -102,6 +126,8 @@ export class Sequencer {
       elapsed: countIn ? -1 : time - this.mainStart,
     };
 
+    this.lastTime = time;
+    this.lastPos = pos;
     this.sub++;
     if (this.sub >= count) this.nextBeat();
     return slot;
@@ -115,6 +141,7 @@ export class Sequencer {
     this.sub = 0;
     this.beat++;
     this.beatStart += this.beatDur;
+    this.lastPos -= 1;
     const { groove } = this.get();
     if (this.beat >= groove.beats) this.nextBar();
     this.beatDur = beatSeconds(this.bpm);
