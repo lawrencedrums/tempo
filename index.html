@@ -74,6 +74,21 @@
 
         <section id="view-practice" class="view">
           <div class="card">
+            <div class="card-head"><span>Count-in</span></div>
+            <div id="count-in" class="seg">
+              <button data-v="0">Off</button><button data-v="1">1 bar</button><button data-v="2">2 bars</button><button data-v="4">4 bars</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <label class="card-head"><span>Practice timer</span><input id="timer-on" type="checkbox" class="switch" /></label>
+            <div class="field">
+              <span>Stop after</span><input id="timer-amount" type="number" inputmode="numeric" />
+              <div id="timer-mode" class="seg small"><button data-v="minutes">minutes</button><button data-v="bars">bars</button></div>
+            </div>
+          </div>
+
+          <div class="card">
             <label class="card-head"><span>Tempo trainer</span><input id="tr-on" type="checkbox" class="switch" /></label>
             <p class="dim">Moves the tempo towards a target as you play. It returns to your starting tempo when you stop.</p>
             <div class="field"><span>Change by</span><input id="tr-step" type="number" inputmode="numeric" /><span>BPM</span></div>
@@ -92,21 +107,6 @@
             <div class="field"><span>Mute</span><input id="gap-mute" type="number" inputmode="numeric" /><span>bars</span></div>
             <label class="field"><span>Mute at random instead</span><input id="gap-random" type="checkbox" class="switch" /></label>
             <div class="field"><span>Chance per bar</span><input id="gap-chance" type="number" inputmode="numeric" /><span>%</span></div>
-          </div>
-
-          <div class="card">
-            <div class="card-head"><span>Count-in</span></div>
-            <div id="count-in" class="seg">
-              <button data-v="0">Off</button><button data-v="1">1 bar</button><button data-v="2">2 bars</button><button data-v="4">4 bars</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <label class="card-head"><span>Practice timer</span><input id="timer-on" type="checkbox" class="switch" /></label>
-            <div class="field">
-              <span>Stop after</span><input id="timer-amount" type="number" inputmode="numeric" />
-              <div id="timer-mode" class="seg small"><button data-v="minutes">minutes</button><button data-v="bars">bars</button></div>
-            </div>
           </div>
         </section>
 
