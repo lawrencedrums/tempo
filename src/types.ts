@@ -34,7 +34,7 @@ export interface Settings {
   boost: boolean;
   flash: boolean;
   latencyMs: number;
-  /** Show the song name and previous/next buttons above the beats. */
+  /** Show the song name and previous/next buttons above the beats. Off by default. */
   songBar: boolean;
   /** Laptop layout: whether the side panel is open. */
   sideOpen: boolean;

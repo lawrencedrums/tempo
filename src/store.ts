@@ -109,7 +109,7 @@ function sanitizeSettings(x: unknown): Settings {
     boost: o.boost === true,
     flash: o.flash === true,
     latencyMs: int(o.latencyMs, 0, 500, 0),
-    songBar: o.songBar !== false,
+    songBar: o.songBar === true,
     sideOpen: o.sideOpen === true,
   };
 }
